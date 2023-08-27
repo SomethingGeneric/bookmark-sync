@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var endpoint = "https://example.com";
 
-    var panels = ["endpointset", "endpointremove"];
+    var panels = ["endpointset", "endpointremove", "loginsignup", "signinbutton", "registerbutton"];
 
     for (const tpanel of panels) {
       document.getElementById(tpanel).hidden = true;
@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
         endpoint = result.endpoint;
         console.log("There was one: " + endpoint);
         document.getElementById("endpointremove").hidden = false;
+        document.getElementById("loginsignup").hidden = false;
       } else {
         console.log("There was none.");
         document.getElementById("endpointset").hidden = false;
@@ -24,6 +25,8 @@ document.addEventListener("DOMContentLoaded", function () {
       browser.storage.local.set({ endpoint: endpoint });
       console.log("Endpoint set to: " + endpoint);
       document.getElementById("endpointset").hidden = true;
+      document.getElementById("endpointremove").hidden = false;
+      document.getElementById("loginsignup").hidden = false;
     });
 
     document.getElementById("endpointremovebutton").addEventListener("click", function () {
