@@ -14,7 +14,9 @@ def index():
 @app.route("/register")
 def register():
     # TODO: json request params to pass along to simpleusers db
+    # HINT: u.make_user(username, password)
 
 @app.route("/login")
 def login():
     # TODO: get request params to authenticate user, then figure out some way to return a session token
+    # HINT: u.auth_user(username, password)
