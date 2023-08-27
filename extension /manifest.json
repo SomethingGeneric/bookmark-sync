@@ -1,0 +1,20 @@
+{
+    "manifest_version": 2,
+    "name": "Bookmark Sync Tool",
+    "version": "1.0",
+    "description": "Self Hosted Alternative for Bookmark Storage",
+    "permissions": [
+      "bookmarks",
+      "storage"
+    ],
+    "browser_action": {
+      "default_popup": "app.html",
+      "default_icon": {
+        "128": "icons/icon128.png"
+      }
+    },
+    "icons": {
+      "128": "icons/icon128.png"
+    }
+}
+  
