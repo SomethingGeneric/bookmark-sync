@@ -11,3 +11,10 @@ app.secret_key = "SuperDuperStrongSecretKeyGoesHere"
 def index():
     return "yippee"
 
+@app.route("/register")
+def register():
+    # TODO: json request params to pass along to simpleusers db
+
+@app.route("/login")
+def login():
+    # TODO: get request params to authenticate user, then figure out some way to return a session token
