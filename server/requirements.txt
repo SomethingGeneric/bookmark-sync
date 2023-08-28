@@ -1,3 +1,5 @@
 Flask[async]
 toml
 simpleusers
+passlib
+black

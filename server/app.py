@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from passlib.hash import pbkdf2_sha256
 
 from simpleusers import usermgr
 
@@ -6,6 +7,16 @@ u = usermgr()
 
 app = Flask(__name__)
 app.secret_key = "SuperDuperStrongSecretKeyGoesHere"
+
+# Define the generate_session_token method
+def generate_session_token(u, p):
+    # Import the necessary module from passlib
+
+    # Generate a random session token using passlib
+    session_token = pbkdf2_sha256.hash(u+p)
+
+    # Return the session token as the response
+    return session_token
 
 @app.route("/")
 def index():
@@ -24,21 +35,7 @@ def login():
     password = request.json.get("password")
     if u.auth_user(username, password):
         session["username"] = username
-        # Define the generate_session_token method
-        def generate_session_token():
-            # Import the necessary module from passlib
-            from passlib.hash import pbkdf2_sha256
-            
-            # Generate a random session token using passlib
-            session_token = pbkdf2_sha256.hash(username + password)
-            
-            # Store the session token in the session object
-            session["token"] = session_token
-            
-            # Return the session token as the response
-            return session_token
         session_token = generate_session_token()  # Generate a random session token
-        session["token"] = session_token  # Store the session token in the session object
         return session_token  # Return the session token as the response
     else:
         return "Authentication failed"
