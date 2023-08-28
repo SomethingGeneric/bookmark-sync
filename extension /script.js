@@ -1,22 +1,52 @@
+function auth(mode) {
+  if (mode == "signin") {
+
+  } else if (mode == "register") {
+
+  } else {
+    return false;
+  }
+}
+
+function showE(id) {
+  document.getElementById(id).hidden = false;
+}
+
+function hideE(id) {
+  document.getElementById(id).hidden = true;
+}
+
 document.addEventListener("DOMContentLoaded", function () {
 
     var endpoint = "https://example.com";
+    var session = "";
 
-    var panels = ["endpointset", "endpointremove", "loginsignup", "signinbutton", "registerbutton"];
+    var panels = ["endpointset", "endpointremove", "loginsignup", "signinbutton", "registerbutton", "signout"];
 
     for (const tpanel of panels) {
-      document.getElementById(tpanel).hidden = true;
+      hideE(tpanel);
     }
+
+    browser.storage.local.get("session").then((result) => {
+      if (result.session) {
+        session = result.session;
+        showE("signout");
+      } else {
+        console.log("There was no session token.");
+        hideE("signinbutton");
+        hideE("registerbutton");
+      }
+    });
 
     browser.storage.local.get("endpoint").then((result) => {
       if (result.endpoint) {
         endpoint = result.endpoint;
         console.log("There was one: " + endpoint);
-        document.getElementById("endpointremove").hidden = false;
-        document.getElementById("loginsignup").hidden = false;
+        showE("endpointremove");
+        showE("loginsignup");
       } else {
         console.log("There was none.");
-        document.getElementById("endpointset").hidden = false;
+        showE("endpointset");
       }
     });
 
@@ -24,17 +54,23 @@ document.addEventListener("DOMContentLoaded", function () {
       endpoint = document.getElementById("theend").value;
       browser.storage.local.set({ endpoint: endpoint });
       console.log("Endpoint set to: " + endpoint);
-      document.getElementById("endpointset").hidden = true;
-      document.getElementById("endpointremove").hidden = false;
-      document.getElementById("loginsignup").hidden = false;
+      hideE("endpointset");
+      showE("endpointremove");
+      showE("loginsignup");
+      showE("signinbutton");
+      showE("registerbutton");
     });
 
     document.getElementById("endpointremovebutton").addEventListener("click", function () {
       browser.storage.local.remove("endpoint");
       console.log("Endpoint removed.");
-      document.getElementById("endpointremove").hidden = true;
-      document.getElementById("endpointset").hidden = false;
+      hideE("endpointremove");
+      showE("endpointset");
     });
+
+    document.getElementById("signinbutton").addEventListener("click", auth("signin"));
+
+    document.getElementById("registerbutton").addEventListener("click", auth("register"));
 
   });
   
