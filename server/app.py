@@ -24,6 +24,8 @@ def login():
     password = request.json.get("password")
     if u.auth_user(username, password):
         session["username"] = username
-        return "Authentication successful"
+        session_token = generate_session_token()  # Generate a random session token
+        session["token"] = session_token  # Store the session token in the session object
+        return session_token  # Return the session token as the response
     else:
         return "Authentication failed"
