@@ -1,11 +1,37 @@
 function auth(mode) {
+
+  var endpoint = "";
+
+  browser.storage.local.get("endpoint").then((result) => {
+    if (result.endpoint) {
+      endpoint = result.endpoint;
+    } else{
+      return false;
+    }
+  });
+
+  const data = {
+    "username": document.getElementById("username").value,
+    "password": document.getElementById("password").value
+  };
+
+  const other = {
+    body: data,
+    method: "post"
+  };
+
+  var m = ""; 
+
   if (mode == "signin") {
-
+    m = "/login";
   } else if (mode == "register") {
-
-  } else {
-    return false;
+    m = "/register";
   }
+
+  fetch(endpoint+m, other).then(data=>{console.log(data);}).then(res=>{console.log(res);}).catch(error=>console.log(error));
+
+  return true;
+
 }
 
 function showE(id) {
@@ -68,9 +94,13 @@ document.addEventListener("DOMContentLoaded", function () {
       showE("endpointset");
     });
 
-    document.getElementById("signinbutton").addEventListener("click", auth("signin"));
+    document.getElementById("signinbutton").addEventListener("click", function () {  
+      auth("signin")
+    });
 
-    document.getElementById("registerbutton").addEventListener("click", auth("register"));
+    document.getElementById("registerbutton").addEventListener("click", function () {
+      auth("register")
+    });
 
   });
   

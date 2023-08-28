@@ -29,7 +29,7 @@ def register():
     u.make_user(username, password)
     token = generate_session_token(username, password)
     u.set_auth_token(username, request.ip, token)
-    return "User created successfully"
+    return token
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -40,4 +40,8 @@ def login():
         u.set_auth_token(username, request.ip, session_token)  # Save it into the database
         return session_token  # Return the session token as the response
     else:
-        return "Authentication failed"
+        return "FAILED"
+    
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=9090)
