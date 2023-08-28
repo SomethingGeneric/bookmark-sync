@@ -26,9 +26,17 @@ def login():
         session["username"] = username
         # Define the generate_session_token method
         def generate_session_token():
-            # Add code to generate a random session token here
-            pass
-        
+            # Import the necessary module from passlib
+            from passlib.hash import pbkdf2_sha256
+            
+            # Generate a random session token using passlib
+            session_token = pbkdf2_sha256.hash(username + password)
+            
+            # Store the session token in the session object
+            session["token"] = session_token
+            
+            # Return the session token as the response
+            return session_token
         session_token = generate_session_token()  # Generate a random session token
         session["token"] = session_token  # Store the session token in the session object
         return session_token  # Return the session token as the response
