@@ -27,6 +27,8 @@ def register():
     username = request.json.get("username")
     password = request.json.get("password")
     u.make_user(username, password)
+    token = generate_session_token(username, password)
+    u.set_auth_token(username, request.ip, token)
     return "User created successfully"
 
 @app.route("/login", methods=["POST"])
@@ -34,8 +36,8 @@ def login():
     username = request.json.get("username")
     password = request.json.get("password")
     if u.auth_user(username, password):
-        session["username"] = username
         session_token = generate_session_token()  # Generate a random session token
+        u.set_auth_token(username, request.ip, session_token)  # Save it into the database
         return session_token  # Return the session token as the response
     else:
         return "Authentication failed"
