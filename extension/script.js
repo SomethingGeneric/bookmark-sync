@@ -2,37 +2,43 @@ function auth(mode) {
 
   var endpoint = "";
 
-  browser.storage.local.get("endpoint").then((result) => {
-    if (result.endpoint) {
-      endpoint = result.endpoint;
-    } else{
-      return false;
-    }
-  });
-
-  const data = {
-    "username": document.getElementById("username").value,
-    "password": document.getElementById("password").value
-  };
-
-  const other = {
-    body: data,
-    method: "post"
-  };
-
-  var m = ""; 
-
-  if (mode == "signin") {
-    m = "/login";
-  } else if (mode == "register") {
-    m = "/register";
-  }
-
-  fetch(endpoint+m, other).then(data=>{console.log(data);}).then(res=>{console.log(res);}).catch(error=>console.log(error));
-
-  return true;
-
-}
+  function getEndpoint() {
+    return new Promise((resolve, reject) => {
+      browser.storage.local.get("endpoint").then((result) => {
+        if (result.endpoint) {
+          resolve(result.endpoint);
+        } else{
+          function auth(mode, endpoint) {
+          
+            const data = {
+              "username": document.getElementById("username").value,
+              "password": document.getElementById("password").value
+            };
+          
+            const other = {
+              body: data,
+              method: "post"
+            };
+          
+            var m = ""; 
+          
+            if (mode == "signin") {
+              m = "/login";
+            } else if (mode == "register") {
+              m = "/register";
+            }
+          
+            fetch(endpoint+m, other).then(data=>{console.log(data);}).then(res=>{console.log(res);}).catch(error=>console.log(error));
+          
+            return true;
+          
+          }
+          
+          getEndpoint().then((endpoint) => {
+            auth("signin", endpoint);
+          }).catch((error) => {
+            console.error(error);
+          });
 
 function showE(id) {
   document.getElementById(id).hidden = false;
@@ -54,7 +60,7 @@ function updateButtonVisibility(sessionExists) {
 
 function checkSessionStatus() {
   return new Promise((resolve, reject) => {
-checkSessionStatus().then((sessionExists) => {
+    browser.storage.local.get("session").then((result) => {
       resolve(!!result.session);
     }).catch(reject);
   });
@@ -87,8 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    document.getElementById("endpointsetbutton").addEventListener("click", function () {
-      endpoint = document.getElementById("theend").value;
+    function setEndpoint(endpoint) {
       browser.storage.local.set({ endpoint: endpoint });
       console.log("Endpoint set to: " + endpoint);
       hideE("endpointset");
@@ -97,6 +102,11 @@ document.addEventListener("DOMContentLoaded", function () {
       checkSessionStatus().then((sessionExists) => {
         updateButtonVisibility(sessionExists);
       }).catch(console.error);
+    }
+    
+    document.getElementById("endpointsetbutton").addEventListener("click", function () {
+      var endpoint = document.getElementById("theend").value;
+      setEndpoint(endpoint);
     });
 
     document.getElementById("endpointremovebutton").addEventListener("click", function () {
