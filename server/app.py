@@ -43,11 +43,11 @@ def login():
         return "FAILED"
 
 @app.route("/bookmarks", methods=["GET"])
+@login_required
+@login_required
 def bookmarks():
-    return [
-        {"title": "Google", "url": "https://www.google.com"},
-        {"title": "GitHub", "url": "https://www.github.com"},
-    ]
+    bookmarks = Bookmark.query.all()
+    return jsonify([bookmark.to_dict() for bookmark in bookmarks])
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=9090)
