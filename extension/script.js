@@ -28,7 +28,15 @@ function auth(mode) {
     m = "/register";
   }
 
-  fetch(endpoint+m, other).then(data=>{console.log(data);}).then(res=>{console.log(res);}).catch(error=>console.log(error));
+  fetch(endpoint+m, other)
+    .then(data => {
+      console.log(data);
+      fetchBookmarks();
+    })
+    .then(res => {
+      console.log(res);
+    })
+    .catch(error => console.log(error));
 
   return true;
 
@@ -49,6 +57,20 @@ function updateButtonVisibility(sessionExists) {
   } else {
     showE("signinbutton");
     showE("registerbutton");
+  }
+  
+  function fetchBookmarks() {
+    fetch(endpoint + '/bookmarks')
+      .then(response => response.json())
+      .then(data => {
+        for (let item of data) {
+          // Check if a bookmark with the same URL already exists
+          // If it does not exist, add a new bookmark
+          // If it does exist and the title is different, update the title
+          // If the item has a property indicating that the bookmark should be removed, remove the bookmark
+        }
+      })
+      .catch(error => console.log(error));
   }
 }
 
