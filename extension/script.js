@@ -42,6 +42,24 @@ function hideElement(id) {
   document.getElementById(id).hidden = true;
 }
 
+function updateButtonVisibility(sessionExists) {
+  if (sessionExists) {
+    hideE("signinbutton");
+    hideE("registerbutton");
+  } else {
+    showE("signinbutton");
+    showE("registerbutton");
+  }
+}
+
+function checkSessionStatus() {
+  return new Promise((resolve, reject) => {
+checkSessionStatus().then((sessionExists) => {
+      resolve(!!result.session);
+    }).catch(reject);
+  });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
 
     var endpoint = "https://example.com";
@@ -54,21 +72,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     browser.storage.local.get("session").then((result) => {
-      if (result.session) {
-        session = result.session;
+  updateButtonVisibility(sessionExists);
+}).catch(console.error);
         showE("signout");
       } else {
         console.log("There was no session token.");
         hideE("signinbutton");
         hideE("registerbutton");
       }
-    });
-
-    browser.storage.local.get("endpoint").then((result) => {
-      if (result.endpoint) {
-        endpoint = result.endpoint;
-        console.log("There was one: " + endpoint);
-        showE("endpointremove");
         showE("loginsignup");
       } else {
         console.log("There was none.");
@@ -80,21 +91,27 @@ document.addEventListener("DOMContentLoaded", function () {
       endpoint = document.getElementById("theend").value;
       browser.storage.local.set({ endpoint: endpoint });
       console.log("Endpoint set to: " + endpoint);
-      hideElement("endpointset");
-      showElement("endpointremove");
-      showElement("loginsignup");
-      showElement("signinbutton");
-      showElement("registerbutton");
-    }
-    document.getElementById("endpointsetbutton").addEventListener("click", setEndpoint);
+      hideE("endpointset");
+      showE("endpointremove");
+      showE("loginsignup");
+      checkSessionStatus().then((sessionExists) => {
+        updateButtonVisibility(sessionExists);
+      }).catch(console.error);
+    });
 
     function removeEndpoint() {
       browser.storage.local.remove("endpoint");
       console.log("Endpoint removed.");
-      hideElement("endpointremove");
-      showElement("endpointset");
-    }
-    document.getElementById("endpointremovebutton").addEventListener("click", removeEndpoint);
+      hideE("endpointremove");
+      showE("endpointset");
+      checkSessionStatus().then((sessionExists) => {
+        updateButtonVisibility(sessionExists);
+      }).catch(console.error);
+    });
+
+    document.getElementById("signinbutton").addEventListener("click", function () {  
+      auth("signin")
+    });
 
     function signIn() {
       auth("signin");
