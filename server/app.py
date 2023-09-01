@@ -41,7 +41,13 @@ def login():
         return session_token  # Return the session token as the response
     else:
         return "FAILED"
-    
+
+@app.route("/bookmarks", methods=["GET"])
+def bookmarks():
+    return [
+        {"title": "Google", "url": "https://www.google.com"},
+        {"title": "GitHub", "url": "https://www.github.com"},
+    ]
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=9090)
