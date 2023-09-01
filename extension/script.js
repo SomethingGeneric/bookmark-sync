@@ -42,6 +42,24 @@ function hideE(id) {
   document.getElementById(id).hidden = true;
 }
 
+function updateButtonVisibility(sessionExists) {
+  if (sessionExists) {
+    hideE("signinbutton");
+    hideE("registerbutton");
+  } else {
+    showE("signinbutton");
+    showE("registerbutton");
+  }
+}
+
+function checkSessionStatus() {
+  return new Promise((resolve, reject) => {
+checkSessionStatus().then((sessionExists) => {
+      resolve(!!result.session);
+    }).catch(reject);
+  });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
 
     var endpoint = "https://example.com";
@@ -54,21 +72,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     browser.storage.local.get("session").then((result) => {
-      if (result.session) {
-        session = result.session;
+  updateButtonVisibility(sessionExists);
+}).catch(console.error);
         showE("signout");
       } else {
         console.log("There was no session token.");
         hideE("signinbutton");
         hideE("registerbutton");
       }
-    });
-
-    browser.storage.local.get("endpoint").then((result) => {
-      if (result.endpoint) {
-        endpoint = result.endpoint;
-        console.log("There was one: " + endpoint);
-        showE("endpointremove");
         showE("loginsignup");
       } else {
         console.log("There was none.");
@@ -83,8 +94,9 @@ document.addEventListener("DOMContentLoaded", function () {
       hideE("endpointset");
       showE("endpointremove");
       showE("loginsignup");
-      showE("signinbutton");
-      showE("registerbutton");
+      checkSessionStatus().then((sessionExists) => {
+        updateButtonVisibility(sessionExists);
+      }).catch(console.error);
     });
 
     document.getElementById("endpointremovebutton").addEventListener("click", function () {
@@ -92,6 +104,9 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("Endpoint removed.");
       hideE("endpointremove");
       showE("endpointset");
+      checkSessionStatus().then((sessionExists) => {
+        updateButtonVisibility(sessionExists);
+      }).catch(console.error);
     });
 
     document.getElementById("signinbutton").addEventListener("click", function () {  
