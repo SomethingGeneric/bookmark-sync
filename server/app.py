@@ -38,16 +38,26 @@ def login():
     if u.auth_user(username, password):
         session_token = generate_session_token()  # Generate a random session token
         u.set_auth_token(username, request.ip, session_token)  # Save it into the database
+        session['username'] = username
         return session_token  # Return the session token as the response
     else:
         return "FAILED"
 
-@app.route("/bookmarks", methods=["GET"])
-def bookmarks():
+def get_bookmarks(self, username):
+    # Fetch bookmarks from the database
+    # This is a placeholder and needs to be replaced with actual database code
     return [
         {"title": "Google", "url": "https://www.google.com"},
         {"title": "GitHub", "url": "https://www.github.com"},
     ]
+
+@app.route("/bookmarks", methods=["GET"])
+def bookmarks():
+    if 'username' not in session:
+        return "Unauthorized", 401
+    username = session['username']
+    bookmarks = u.get_bookmarks(username)
+    return bookmarks
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=9090)
