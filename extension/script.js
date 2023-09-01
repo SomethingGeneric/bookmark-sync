@@ -29,10 +29,29 @@ function auth(mode) {
   }
 
   fetch(endpoint+m, other).then(data=>{console.log(data);}).then(res=>{console.log(res);}).catch(error=>console.log(error));
-
+  
   return true;
-
-}
+  
+  }
+  
+  function fetchBookmarks() {
+    fetch(endpoint + '/bookmarks')
+      .then(response => response.json())
+      .then(bookmarks => {
+        bookmarks.forEach(bookmark => {
+          if (!bookmarkExists(bookmark)) {
+            addBookmark(bookmark);
+          }
+        });
+  
+        getLocalBookmarks().forEach(localBookmark => {
+          if (!bookmarks.includes(localBookmark)) {
+            removeBookmark(localBookmark);
+          }
+        });
+      })
+      .catch(error => console.log(error));
+  }
 
 function showE(id) {
   document.getElementById(id).hidden = false;
