@@ -34,7 +34,7 @@ function auth(mode) {
   
   }
   
-  function fetchBookmarks() {
+  function syncBookmarks() {
     fetch(endpoint + '/bookmarks')
       .then(response => response.json())
       .then(bookmarks => {
