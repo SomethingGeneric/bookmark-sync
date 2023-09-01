@@ -54,7 +54,8 @@ function updateButtonVisibility(sessionExists) {
 
 function checkSessionStatus() {
   return new Promise((resolve, reject) => {
-checkSessionStatus().then((sessionExists) => {
+    checkSessionStatus().then((sessionExists) => {
+      updateButtonVisibility(sessionExists);
       resolve(!!result.session);
     }).catch(reject);
   });
@@ -87,42 +88,42 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    function setEndpoint() {
-      endpoint = document.getElementById("theend").value;
-      browser.storage.local.set({ endpoint: endpoint });
-      console.log("Endpoint set to: " + endpoint);
-      hideE("endpointset");
-      showE("endpointremove");
-      showE("loginsignup");
-      checkSessionStatus().then((sessionExists) => {
-        updateButtonVisibility(sessionExists);
+function setEndpoint() {
+  endpoint = document.getElementById("theend").value;
+  browser.storage.local.set({ endpoint: endpoint });
+  console.log("Endpoint set to: " + endpoint);
+  hideE("endpointset");
+  showE("endpointremove");
+  showE("loginsignup");
+  checkSessionStatus().catch(console.error);
+}
       }).catch(console.error);
     });
 
-    function removeEndpoint() {
-      browser.storage.local.remove("endpoint");
-      console.log("Endpoint removed.");
-      hideE("endpointremove");
-      showE("endpointset");
-      checkSessionStatus().then((sessionExists) => {
-        updateButtonVisibility(sessionExists);
+function removeEndpoint() {
+  browser.storage.local.remove("endpoint");
+  console.log("Endpoint removed.");
+  hideE("endpointremove");
+  showE("endpointset");
+  checkSessionStatus().catch(console.error);
+}
       }).catch(console.error);
     });
 
     document.getElementById("signinbutton").addEventListener("click", function () {  
-      auth("signin")
+      auth("signin");
+      checkSessionStatus().catch(console.error);
     });
 
     function signIn() {
       auth("signin");
-    }
-    
     function register() {
       auth("register");
-    }
-    
     document.getElementById("signinbutton").addEventListener("click", signIn);
-    document.getElementById("registerbutton").addEventListener("click", register);
+    document.getElementById("registerbutton").addEventListener("click", function () {
+      register();
+      checkSessionStatus().catch(console.error);
+    });
 
   });
   
