@@ -41,7 +41,15 @@ def login():
         return session_token  # Return the session token as the response
     else:
         return "FAILED"
-    
+
+@app.route("/bookmarks", methods=["GET", "POST"])
+def bookmarks():
+    if request.method == "GET":
+        return {"bookmarks": ["bookmark1", "bookmark2", "bookmark3"]}
+    elif request.method == "POST":
+        bookmark = request.json.get("bookmark")
+        # TODO: Add the bookmark to the list of bookmarks
+        return {"message": "Bookmark added successfully"}
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=9090)
