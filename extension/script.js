@@ -34,11 +34,11 @@ function auth(mode) {
 
 }
 
-function showE(id) {
+function showElement(id) {
   document.getElementById(id).hidden = false;
 }
 
-function hideE(id) {
+function hideElement(id) {
   document.getElementById(id).hidden = true;
 }
 
@@ -76,31 +76,36 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    document.getElementById("endpointsetbutton").addEventListener("click", function () {
+    function setEndpoint() {
       endpoint = document.getElementById("theend").value;
       browser.storage.local.set({ endpoint: endpoint });
       console.log("Endpoint set to: " + endpoint);
-      hideE("endpointset");
-      showE("endpointremove");
-      showE("loginsignup");
-      showE("signinbutton");
-      showE("registerbutton");
-    });
+      hideElement("endpointset");
+      showElement("endpointremove");
+      showElement("loginsignup");
+      showElement("signinbutton");
+      showElement("registerbutton");
+    }
+    document.getElementById("endpointsetbutton").addEventListener("click", setEndpoint);
 
-    document.getElementById("endpointremovebutton").addEventListener("click", function () {
+    function removeEndpoint() {
       browser.storage.local.remove("endpoint");
       console.log("Endpoint removed.");
-      hideE("endpointremove");
-      showE("endpointset");
-    });
+      hideElement("endpointremove");
+      showElement("endpointset");
+    }
+    document.getElementById("endpointremovebutton").addEventListener("click", removeEndpoint);
 
-    document.getElementById("signinbutton").addEventListener("click", function () {  
-      auth("signin")
-    });
-
-    document.getElementById("registerbutton").addEventListener("click", function () {
-      auth("register")
-    });
+    function signIn() {
+      auth("signin");
+    }
+    
+    function register() {
+      auth("register");
+    }
+    
+    document.getElementById("signinbutton").addEventListener("click", signIn);
+    document.getElementById("registerbutton").addEventListener("click", register);
 
   });
   
