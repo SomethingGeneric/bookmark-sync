@@ -63,17 +63,17 @@ function hideElement(id) {
 
 function updateButtonVisibility(sessionExists) {
   if (sessionExists) {
-    hideE("signinbutton");
-    hideE("registerbutton");
+    hideElement("signinbutton");
+    hideElement("registerbutton");
   } else {
-    showE("signinbutton");
-    showE("registerbutton");
+    showElement("signinbutton");
+    showElement("registerbutton");
   }
 }
 
 function checkSessionStatus() {
   return new Promise((resolve, reject) => {
-checkSessionStatus().then((sessionExists) => {
+    browser.storage.local.get("session").then((result) => {
       resolve(!!result.session);
     }).catch(reject);
   });
@@ -90,9 +90,9 @@ document.addEventListener("DOMContentLoaded", function () {
       hideE(tpanel);
     }
 
-    browser.storage.local.get("session").then((result) => {
-  updateButtonVisibility(sessionExists);
-}).catch(console.error);
+    checkSessionStatus().then((sessionExists) => {
+      updateButtonVisibility(sessionExists);
+    }).catch(console.error);
         showE("signout");
       } else {
         console.log("There was no session token.");
